@@ -83,6 +83,12 @@ export default {
           if (error.code === "auth/invalid-email") {
             this.errorMessage = "Invalid Email";
           }
+          if (
+            error.code === "auth/user-not-found" ||
+            error.code === "auth/wrong-password"
+          ) {
+            this.errorMessage = "Incorrect email or password";
+          }
         });
     }
   }

@@ -11,9 +11,9 @@
       <q-toolbar-title align="right" class="text-body1 text-weight-medium">
         Funds: ${{ funds }}
       </q-toolbar-title>
-      <q-btn-group flat align="right" v-if="userIsLoggedIn">
+      <q-btn-group flat align="right">
         <q-btn label="End day" @click="endDay"></q-btn>
-        <q-btn-dropdown label="Save & Load">
+        <q-btn-dropdown label="Save & Load" v-if="userIsLoggedIn">
           <q-list>
             <q-item clickable v-ripple @click="saveData">
               <q-item-section>
@@ -27,9 +27,9 @@
             </q-item>
           </q-list>
         </q-btn-dropdown>
-        <q-btn label="Logout" @click="logoutUser"></q-btn>
+        <q-btn label="Logout" @click="logoutUser" v-if="userIsLoggedIn"></q-btn>
       </q-btn-group>
-      <q-tabs v-else>
+      <q-tabs v-if="!userIsLoggedIn">
         <q-route-tab to="/signup">Sign Up / Login</q-route-tab>
       </q-tabs>
     </q-toolbar>
@@ -38,6 +38,7 @@
 
 <script>
 import axios from "axios";
+import firebase from "firebase";
 import { mapActions } from "vuex";
 export default {
   computed: {
@@ -68,7 +69,12 @@ export default {
       this.getData();
     },
     logoutUser() {
-      this.$store.dispatch("logoutUser");
+      firebase
+        .auth()
+        .signOut()
+        .then(() => {
+          this.$store.dispatch("logoutUser");
+        });
     }
   }
 };
